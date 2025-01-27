@@ -1,137 +1,134 @@
-# Movielens-Recommender-System
+# **MovieLens Recommender System**
 
-# Collaborators
-- Eugene Asengi
-- Lilian Baburo
-- Abdihakim Issack
-- Samuel Yashue
-- Brian Siele
-# Overview
-
-In today's digital age, personalized recommendations are critical to enhancing user experiences across various platforms. One prime example is the movie industry, where vast catalogs of films can overwhelm users, making it challenging for them to find content that suits their unique tastes. The MovieLens Recommender System project aims to address this challenge by leveraging the MovieLens dataset, a rich source of user ratings and movie metadata, to develop a robust recommendation engine.
-
-Through this project, we aim to demonstrate the potential of data-driven recommendations in creating tailored viewing experiences, helping users discover movies they'll love, and fostering greater engagement with the platform.
+This project is a collaborative and content-based movie recommendation system utilizing the MovieLens dataset. It recommends movies to users based on their preferences and movie metadata.
 
 ---
-## Table of Contents
-- [Data Collection and Preprocessing](#data-collection-and-preprocessing)
-- [Exploratory Data Analysis (EDA)](#exploratory-data-analysis-eda)
-- [Modeling](#modeling)
-  - [k-Nearest Neighbors (k-NN)](#k-nearest-neighbors-k-nn)
-  - [Evaluation](#evaluation)
-- [Movie Metadata Scraper](#movie-metadata-scraper)
-  - [Web Scraping for Movie Metadata (Images and URLs)](#web-scraping-for-movie-metadata-images-and-urls)
-- [Conclusion](#conclusion)
- 
+
+## **Table of Contents**  
+1. [Introduction](#introduction)  
+2. [Dataset Overview](#dataset-overview)  
+3. [Data Preprocessing](#data-preprocessing)  
+4. [Exploratory Data Analysis (EDA)](#exploratory-data-analysis-eda)  
+5. [Collaborative Filtering Approach](#collaborative-filtering-approach)  
+6. [Content-Based Recommendation Approach](#content-based-recommendation-approach)  
+7. [Recommendation System Results](#recommendation-system-results)  
+8. [Evaluation Metrics](#evaluation-metrics)  
+9. [Deployment](#deployment)  
+10. [Contributors](#contributors)  
+11. [Conclusion](#conclusion)  
+
 ---
-## Data Collection and Preprocessing
-### Dataset
-The dataset contains the following key features:
-- **Links.csv**: `vieId`, `imdbId`, `tmdbId`
-- **Movies.cvs**:`movieId`,`title`,`genres`
-- **ratings.cvs**:`userId`,`movieId`,`rating`,`timestamp`
-- **Tags.cvs**:`userId`,`movieId`,`tag`,`timestamp`
 
-## Data Preprocessing
-The first step in building the recommender system is data preprocessing.
-### 1. Cleaning the 'genres' Column:
-The **'genres'** column contains a string of genres separated by a pipe (`|`). For easier manipulation and analysis, we split this column into a list of genres for each movie. This will allow us to:
+## **Introduction**  
 
-- Efficiently analyze individual genres.
-- Explore how genres relate to other movie attributes such as ratings, popularity, or release year.
+Recommender systems play a critical role in providing personalized experiences in various domains like e-commerce and streaming platforms. This project aims to develop a recommendation system using the MovieLens dataset to:  
+1. Suggest movies based on similar users' preferences (**Collaborative Filtering**).  
+2. Suggest movies similar to a specific title (**Content-Based Filtering**).  
 
-By transforming this column, we can also conduct more targeted analysis of specific genres in the dataset.
+---  
 
-### 2. Extracting the Year from the 'title' Column:
-The **'title'** column contains the movie title with the year of release in parentheses at the end (e.g., "The Matrix (1999)"). To facilitate year-based analysis and comparisons, we extract the **year of release** from the title and store it in a new column called **'year'**.
+## **Dataset Overview**  
 
-This step enables us to:
+The project uses the **MovieLens Dataset**, which includes:  
+- **Movies Data**: Metadata about movies such as titles, genres, and IDs.  
+- **Ratings Data**: User ratings for movies, including `userId`, `movieId`, and rating scores.  
 
-- Perform time-based analysis, such as sorting movies by their release year.
-- Analyze trends over time, such as how the popularity of certain genres evolves.
-- Cleanly separate movie titles from their release years for better readability.
-### Sparse User-Item Interaction Matrix: 
-In this step, we create a **Sparse User-Item Interaction Matrix** to represent interactions between users and movies. This matrix is used to train recommendation models. Since most users only rate a small number of movies, the matrix is sparse, meaning most of its values are zeros.
+### Key Characteristics:  
+- **Number of Movies**: Approximately 9,000+  
+- **Number of Users**: Over 600 unique user IDs  
+- **Ratings**: Each user has rated several movies on a scale from 1 to 5  
 
-We use the **Compressed Sparse Row (CSR)** format to store this matrix efficiently, as it saves memory and computational resources by only keeping track of non-zero ratings.
+---  
 
-Additionally, several **mappings** are generated to help us access user and movie information:
+## **Data Preprocessing**  
 
-- `user_mapper`: Maps user ID to user index.
-- `movie_mapper`: Maps movie ID to movie index.
-- `user_inv_mapper`: Maps user index back to user ID.
-- `movie_inv_mapper`: Maps movie index back to movie ID.
+### Key Steps:  
+1. **Merging Datasets**: Combined movies and ratings datasets using `movieId`.  
+2. **Handling Missing Values**: Removed rows with null values.  
+3. **Filtering Rarely Rated Movies**: Excluded movies with very few ratings.  
+4. **Encoding Data**: Processed categorical features (like genres) to numeric formats.  
+5. **Normalizing Ratings**: Transformed rating distributions to ensure consistency.  
 
-These mappings are crucial for efficient matrix-based operations in building the recommendation system.
+---  
 
-## Exploratory Data Analysis (EDA)
-In this part, we look at the main details of the dataset to understand it better:
-1. **Total Ratings:**  
-   The dataset has **100,836 ratings** in total. This shows how many times users have rated movies.
-2. **Unique Movies:**  
-   There are **9,742 different movies** in the dataset. This tells us how many distinct movies have been rated by users.
-3. **Unique Users:**  
-   **610 users** have given ratings. This is the number of people who have rated at least one movie.
-4. **Average Ratings per User:**  
-   On average, each user has rated **165.3 movies**. This means that users are quite active, but some may have rated many more movies than others.
-5. **Average Ratings per Movie:**  
-   Each movie has been rated **10.35 times** on average. This means some movies are rated by many users, while others may have very few ratings.
+## **Exploratory Data Analysis (EDA)**  
 
-### Key Insights:
-- The dataset has a large number of ratings, which gives us a lot of data to work with.
-- There are many movies, but not all movies have been rated by all users.
-- Users seem active, but some rate more movies than others.
-- Not all movies get the same amount of attention; some are rated much more often than others.
+### Key Insights:  
+- **Top-Rated Movies**: Movies with the highest average ratings.  
+- **Most Rated Movies**: Analyzed movies frequently rated by users.  
+- **User Activity**: Distribution of the number of ratings per user.  
 
-These insights help us understand the dataset and guide our analysis.
+Visualizations highlighted trends and user preferences, aiding in model design.  
 
+---  
 
-## Modelling
-In this project, several machine learning algorithms were applied to build a movie recommendation system. Two key algorithms were implemented for this task: k-Nearest Neighbors (k-NN) and Singular Value Decomposition (SVD).
-### k-Nearest Neighbors (k-NN)
+## **Collaborative Filtering Approach**  
 
-In this step, we implement **item-item recommendations** using **k-Nearest Neighbors (k-NN)**. This technique recommends movies that are similar to the ones a user has interacted with, based on their engagement with various movies.
+This technique recommends movies based on user interactions with the system.  
 
-### Process:
-1. **Input:** A function is created that takes a **movie_id** and the **user-item interaction matrix (X)** as input.
-2. **Similarity Calculation:** We calculate the **cosine similarity** between movies (alternatively, we can use other distance measures like Euclidean or Manhattan distance) to measure how similar they are to each other.
-3. **Top k Similar Movies:** The function then returns the top **k most similar movies** based on the similarity scores.
+### Process:  
+1. **User-Item Matrix**: Created a matrix with users as rows, movies as columns, and ratings as values.  
+2. **KNN Model**: Identified similar users using the K-Nearest Neighbors algorithm.  
+3. **Recommendations**: Suggested movies that similar users highly rated but were unrated by the target user.  
 
-This method helps recommend movies that are **similar** to a user's past interactions, enabling personalized suggestions for the user based on their previous ratings or choices.
+---  
 
-### Evaluation
-The model's performance was evaluated using various metrics:
+## **Content-Based Recommendation Approach**  
 
-- **Precision**: 0.1 (Only 10% of recommendations were relevant)
-- **Recall**: 0.25 (25% of relevant items were recommended)
-- **F1 Score**: 0.14 (Indicating low performance)
-- **RMSE (Root Mean Squared Error)**: 0.8804  
-- **SVD RMSE**: 0.8804  
+This method recommends movies based on similarity to a specific movie.  
 
-#### **Possible Reasons for Low Performance:**
-- **Cold-start problem**: Limited data or insufficient training.
-- **Lack of relevant interactions**: Low overlap between user preferences and recommendations.
-- **Limited diversity**: Biased recommendations affecting accuracy.
-- **Sparse data**: Insufficient user-item interactions leading to poor predictions.
+### Process:  
+1. **Feature Selection**: Focused on movie metadata like genres and titles.  
+2. **Cosine Similarity**: Computed similarity between movie feature vectors.  
+3. **Recommendations**: Suggested movies most similar to a selected movie.  
 
+---  
 
-## Movie Metadata Scraper
+## **Recommendation System Results**  
 
-This project involves scraping movie metadata, specifically URLs and images, from The Movie Database (TMDb) using a list of movie IDs (TMDb IDs). The scraper generates URLs for each movie and extracts the associated backdrop image URL.
+### Examples:  
+1. **Collaborative Filtering**: Personalized results for users based on others with similar tastes.  
+2. **Content-Based Filtering**: Relevant movies similar to a selected title, e.g., movies in the same genre.  
 
-### Web Scraping for Movie Metadata (Images and URLs)
+A Flask web app provides an intuitive, Netflix-style interface for showcasing recommendations.  
 
-The web scraping process works as follows:
+---  
 
-1. **Generate Movie URL**: For each movie, the scraper constructs a URL based on its unique TMDb ID. The format of the URL is:
+## **Evaluation Metrics**  
 
-2. **Send HTTP Request**: A GET request is made to fetch the webpage content for each movie.
+Performance was evaluated using:  
 
-3. **Parse HTML**: The HTML content of the response is parsed using BeautifulSoup to navigate and extract relevant data.
+1. **Precision**: Fraction of relevant movies in the recommendations.  
+2. **Recall**: Fraction of relevant movies retrieved out of all relevant movies.  
+3. **RMSE (Root Mean Square Error)**: Assessed accuracy of predicted ratings.  
 
-4. **Extract Image URL**: The scraper searches for the movie's backdrop image within the HTML structure and retrieves its URL. The image URL is then formatted to be a full URL:
+These metrics demonstrated the system’s ability to generate relevant and personalized recommendations.  
 
-5. **Handle Missing Images**: If no image is found for a particular movie, a default placeholder image URL is used:
-6. **Store Data**: The URL and image URL for each movie are saved in a pandas DataFrame for further processing or storage.
+---  
 
-## Conclusion
+## **Deployment**  
+
+The application is deployed online for testing and demonstration:  
+[MovieLens Recommender System Deployment](#)  
+
+---  
+
+## **Contributors**  
+
+This project was developed by the following team members:  
+1. **Abdihakim Issack**  
+2. **Lilian Kaburo**  
+3. **Eugene Asengi**  
+4. **Samuel Yashua**  
+5. **Brian Siele**   
+
+---  
+
+## **Conclusion**  
+
+The MovieLens Recommender System effectively combines collaborative filtering and content-based filtering techniques to deliver accurate and personalized movie recommendations. Future improvements could include:  
+- Hybrid recommendation techniques.  
+- Integration of additional metadata.  
+- Optimization for scalability and real-time recommendations.  
+
+---
