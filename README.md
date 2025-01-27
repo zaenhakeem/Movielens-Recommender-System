@@ -109,7 +109,7 @@ These metrics demonstrated the system’s ability to generate relevant and perso
 ## **Deployment**  
 
 The application is deployed online for testing and demonstration:  
-[MovieLens Recommender System Deployment](#)  
+[MovieLens Recommender System Deployment](https://movielens-recommender-system-rdyj.onrender.com/)  
 
 ---  
 
