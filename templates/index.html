@@ -1,0 +1,128 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Recommender</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #121212;
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        header {
+            width: 100%;
+            padding: 1rem;
+            background-color: #1e1e1e;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2rem;
+            color: #e50914;
+        }
+
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-btn {
+            background-color: #333333;
+            color: #ffffff;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background-color: #1e1e1e;
+            display: none;
+            z-index: 10;
+        }
+
+        .dropdown-menu.active {
+            display: block;
+        }
+
+        .container {
+            margin-top: 3rem;
+            background-color: #1e1e1e;
+            padding: 2rem;
+            border-radius: 10px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+        }
+
+        select, input, button {
+            width: 100%;
+            padding: 0.8rem;
+            border-radius: 5px;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        button {
+            background-color: #e50914;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        footer {
+            margin-top: 3rem;
+            font-size: 0.9rem;
+            color: #777777;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Movie Recommender</h1>
+    </header>
+
+    <div class="container">
+        <h2>User-Based Recommendation</h2>
+        <form action="/recommend_user" method="POST">
+            <label for="userId">Select a User ID</label>
+            <select name="userId" id="userId">
+                {% for user_id in user_ids %}
+                    <option value="{{ user_id }}">{{ user_id }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit">Get Recommendations</button>
+        </form>
+    </div>
+
+    <div class="container">
+        <h2>Content-Based Recommendation</h2>
+        <form action="/recommend_movie" method="POST">
+            <label for="movie_name">Enter Movie Title</label>
+            <input type="text" id="movie_name" name="movie_name" placeholder="Enter movie title">
+            <button type="submit">Get Recommendations</button>
+        </form>
+    </div>
+
+    <footer>
+        Created by Group 1 &copy; 2025
+    </footer>
+</body>
+</html>
