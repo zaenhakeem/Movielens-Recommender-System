@@ -109,9 +109,9 @@ These metrics demonstrated the system’s ability to generate relevant and perso
 ## **Deployment**  
 
 The application is deployed online for testing and demonstration:  
-[MovieLens Recommender System Deployment](#)  
+[MovieLens Recommender System Deployment](https://movielens-recommender-system-rdyj.onrender.com/)  
 
----  
+---
 
 ## **Contributors**  
 
@@ -120,8 +120,7 @@ This project was developed by the following team members:
 2. **Lilian Kaburo**  
 3. **Eugene Asengi**  
 4. **Samuel Yashua**  
-5. **Brian Siele**   
-
+5. **Brian Siele**
 ---  
 
 ## **Conclusion**  

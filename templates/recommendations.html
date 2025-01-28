@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recommendations</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #121212;
+            color: white;
+            font-family: 'Arial', sans-serif;
+        }
+
+        header {
+            background-color: #e50914;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .container {
+            padding: 2rem;
+        }
+
+        .movies-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 1rem;
+        }
+
+        .movie-card {
+            background-color: #1e1e1e;
+            border-radius: 10px;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .movie-card img {
+            width: 100%;
+            border-radius: 5px;
+        }
+
+        .back-link {
+            margin-top: 2rem;
+            padding: 0.8rem 1.5rem;
+            background-color: #e50914;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>{{ message }}</h1>
+    </header>
+    <div class="container">
+        <div class="movies-grid">
+            {% if movies %}
+                {% for movie in movies %}
+                    <div class="movie-card">
+                        <img src="{{ movie['img_url'] }}" alt="Movie Poster">
+                        <h3>{{ movie['title'] }}</h3>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>No recommendations found.</p>
+            {% endif %}
+        </div>
+        <a href="/" class="back-link">Go Back</a>
+    </div>
+</body>
+</html>
